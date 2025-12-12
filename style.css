@@ -1,0 +1,373 @@
+/* 1. 기본 및 전체 앱 레이아웃 */
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; background-color: #f0f2f5; height: 100vh; margin: 0; overflow: hidden; display: flex; transition: background-color 0.3s; }
+.hidden { display: none !important; }
+#app-wrapper { display: flex; flex-grow: 1; height: 100vh; }
+
+/* 2. 서버 탐색 (좌측 바) */
+#server-nav { width: 72px; background-color: #f3f4f6; padding-top: 12px; display: flex; flex-direction: column; align-items: center; gap: 8px; flex-shrink: 0; border-right: 1px solid #e0e0e0; z-index: 10; transition: background-color 0.3s, border-color 0.3s; }
+.server-icon { width: 48px; height: 48px; background-color: #e4e6eb; color: #333; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 20px; font-weight: bold; cursor: pointer; transition: all 0.2s ease; }
+.server-icon:hover { border-radius: 16px; background-color: #007bff; color: white; }
+.server-icon.active { border-radius: 16px; background-color: #007bff; color: white; }
+.server-icon.add-server { background-color: #e4e6eb; color: #007bff; font-size: 28px; }
+.server-icon.add-server:hover { background-color: #007bff; color: white; }
+#community-button { font-size: 24px; } 
+
+/* 3. 채널/DM 목록 (사이드바) */
+#channel-list { width: 240px; background-color: #ffffff; color: #333; display: flex; flex-direction: column; flex-shrink: 0; border-right: 1px solid #e0e0e0; transition: background-color 0.3s, border-color 0.3s, color 0.3s; }
+#channel-header { padding: 16px; border-bottom: 1px solid #eee; flex-shrink: 0; transition: border-color 0.3s; }
+#channel-header h3 { margin: 0; color: #111; font-size: 16px; transition: color 0.3s; }
+#channel-content { flex-grow: 1; overflow-y: auto; padding: 16px 8px; }
+#friends-list-ul { list-style: none; margin: 0 0 10px 0; padding: 0; }
+.channel-group-header { display: flex; justify-content: space-between; align-items: center; padding: 0 8px; }
+.channel-group h4 { margin: 12px 0 8px 0; font-size: 12px; font-weight: bold; text-transform: uppercase; color: #555; transition: color 0.3s; }
+.add-button { background: none; border: none; color: #555; font-size: 20px; font-weight: bold; cursor: pointer; padding: 0 5px; border-radius: 4px; transition: color 0.3s; }
+.add-button:hover { background-color: #f0f2f5; color: #111; }
+.channel-group ul { list-style: none; margin: 0; padding: 0; }
+.channel-item, .dm-item { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: 500; color: #555; transition: background-color 0.2s, color 0.2s; }
+.channel-item:hover, .dm-item:hover { background-color: #f0f2f5; color: #111; }
+.channel-item.active, .dm-item.active { background-color: #e6f2ff; color: #007bff; }
+
+/* 4. 상태 표시등 */
+.status-indicator { width: 10px; height: 10px; border-radius: 50%; border: 2px solid #ffffff; flex-shrink: 0; transition: border-color 0.3s; }
+.status-indicator.online { background-color: #2de0a5; }
+.status-indicator.offline { background-color: #999; border: none; }
+#user-profile .status-indicator { position: absolute; bottom: 0px; left: 28px; border: 3px solid #f0f2f5; width: 9px; height: 9px; transition: border-color 0.3s; }
+
+/* 5. 사용자 프로필 */
+#user-profile { display: flex; align-items: center; gap: 10px; padding: 12px; background-color: #f0f2f5; position: relative; flex-shrink: 0; transition: background-color 0.3s; }
+.profile-pic { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+.user-info { display: flex; flex-direction: column; flex-grow: 1; }
+.user-info strong { color: #111; font-size: 14px; transition: color 0.3s; }
+.user-info .user-status { font-size: 12px; color: #555; transition: color 0.3s; }
+#user-profile button { background: none; border: none; color: #555; font-size: 18px; cursor: pointer; padding: 4px; transition: color 0.3s; }
+#user-profile button:hover { color: #111; }
+
+/* 6. 메인 채팅 컨테이너 */
+#chat-container { flex-grow: 1; background-color: #ffffff; display: flex; flex-direction: column; overflow: hidden; position: relative; transition: background-color 0.3s; }
+
+/* 6-1. 채팅창 래퍼 */
+#chat-area-wrapper { display: flex; flex-direction: column; flex-grow: 1; overflow: hidden; }
+#chat-header { padding: 16px 20px; border-bottom: 1px solid #eee; background-color: #ffffff; color: #111; flex-shrink: 0; transition: background-color 0.3s, border-color 0.3s, color 0.3s; }
+#chat-header h3 { margin: 0; font-size: 18px; }
+#chat-header p { margin: 4px 0 0; font-size: 14px; color: #777; transition: color 0.3s; }
+#chat-window { flex-grow: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background-color: #ffffff; transition: background-color 0.3s; }
+.message { padding: 10px 15px; border-radius: 20px; max-width: 75%; word-wrap: break-word; line-height: 1.4; font-size: 15px; }
+.message.sent { background-color: #007bff; color: white; align-self: flex-end; border-bottom-right-radius: 5px; }
+.message.received { background-color: #e4e6eb; color: #050505; align-self: flex-start; border-bottom-left-radius: 5px; transition: background-color 0.3s, color 0.3s; }
+.message img { max-width: 100%; max-height: 300px; object-fit: contain; background-color: #eee; border-radius: 10px; display: block; margin-top: 5px; }
+.image-caption { font-size: 15px; margin-top: 8px; margin-bottom: 0; color: inherit; }
+body.dark .message.sent .image-caption { color: white; }
+body.dark .message.received .image-caption { color: #eee; }
+.message.file-bubble { background-color: #f0f0f0; border: 1px solid #ddd; width: fit-content; }
+.file-bubble a { display: flex; align-items: center; gap: 8px; text-decoration: none; color: #333; font-weight: 500; }
+.file-bubble a::before { content: '📄'; font-size: 1.2em; }
+
+#image-preview-container { background-color: #f7f7f7; padding: 10px 15px; border-top: 1px solid #ddd; display: flex; align-items: center; gap: 10px; }
+.image-preview-wrapper { position: relative; display: inline-block; }
+#image-preview-img { max-height: 80px; max-width: 150px; border-radius: 8px; object-fit: contain; }
+#cancel-image-preview { position: absolute; top: -5px; right: -5px; background-color: rgba(0,0,0,0.7); color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 14px; line-height: 20px; text-align: center; cursor: pointer; padding: 0; }
+#image-preview-container span { font-size: 13px; color: #555; }
+
+#message-form { display: flex; align-items: center; padding: 15px; border-top: 1px solid #ddd; background-color: #ffffff; flex-shrink: 0; transition: background-color 0.3s, border-color 0.3s; }
+#attachment-button { background-color: #f0f0f0; color: #555; border: none; width: 40px; height: 40px; border-radius: 50%; font-size: 24px; font-weight: bold; cursor: pointer; margin-right: 10px; flex-shrink: 0; display: flex; justify-content: center; align-items: center; line-height: 1; transition: background-color 0.3s, color 0.3s; }
+#attachment-button:hover { background-color: #e0e0e0; }
+#message-input { flex-grow: 1; border: 1px solid #ccd0d5; border-radius: 20px; padding: 10px 15px; font-size: 16px; outline: none; transition: background-color 0.3s, border-color 0.3s, color 0.3s; }
+#message-input:focus { border-color: #007bff; }
+#message-form button[type="submit"] { background-color: #007bff; color: white; border: none; padding: 0 15px; margin-left: 10px; border-radius: 20px; font-size: 16px; font-weight: bold; cursor: pointer; transition: background-color 0.2s; height: 40px; }
+#message-form button[type="submit"]:hover { background-color: #0056b3; }
+#attachment-menu { position: absolute; bottom: 70px; left: 10px; width: 150px; background-color: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); padding: 8px; display: none; flex-direction: column; gap: 5px; z-index: 10; transition: background-color 0.3s; }
+#attachment-menu.active { display: flex; }
+#attachment-menu label { padding: 10px 12px; border-radius: 6px; cursor: pointer; font-size: 15px; font-weight: 500; color: #333; transition: background-color 0.2s, color 0.2s; }
+#attachment-menu label:hover { background-color: #f0f0f0; }
+#image-input, #file-input { display: none; }
+
+
+/* 6-2. 친구 보기 (Discord Home) 스타일 */
+#friends-view { display: flex; flex-direction: column; flex-grow: 1; overflow: hidden; background-color: #ffffff; transition: background-color 0.3s; }
+#friends-header { display: flex; align-items: center; padding: 16px 20px; border-bottom: 1px solid #eee; flex-shrink: 0; gap: 20px; transition: background-color 0.3s, border-color 0.3s; }
+#friends-header h3 { margin: 0; font-size: 18px; color: #111; border-right: 1px solid #ddd; padding-right: 20px; transition: color 0.3s, border-color 0.3s; }
+.friends-nav { display: flex; gap: 10px; flex-wrap: wrap; }
+.friends-nav button { background: none; border: none; padding: 6px 10px; border-radius: 6px; font-size: 15px; font-weight: 500; color: #555; cursor: pointer; transition: background-color 0.2s, color 0.2s; }
+.friends-nav button:hover { background-color: #f0f2f5; color: #111; }
+.friends-nav button.active { color: #007bff; background-color: #e6f2ff; }
+#add-friend-btn-main { background-color: #007bff; color: white; }
+#add-friend-btn-main:hover { background-color: #0056b3; color: white; }
+
+.friends-content-wrapper { flex-grow: 1; overflow-y: auto; padding: 20px; }
+.friends-content-pane { }
+.friends-content-pane:not(.active) { display: none; }
+.friends-content-pane h4 { margin: 0 0 15px 0; color: #111; transition: color 0.3s; }
+.placeholder-text { font-size: 15px; color: #777; transition: color 0.3s; padding-top: 10px; }
+
+/* 탭 5: 친구 추가 */
+#add-friend-view { }
+#add-friend-form-container p { margin: 0 0 15px 0; font-size: 14px; color: #555; transition: color 0.3s; }
+#add-friend-form { display: flex; gap: 10px; }
+#add-friend-form input { flex-grow: 1; border: 1px solid #ccc; border-radius: 6px; padding: 10px 12px; font-size: 15px; outline: none; transition: background-color 0.3s, border-color 0.3s, color 0.3s; }
+#add-friend-form button { background-color: #007bff; color: white; border: none; padding: 0 20px; border-radius: 6px; font-size: 15px; font-weight: 500; cursor: pointer; }
+
+/* 탭 1 & 2: 친구 목록 (공통) */
+#all-friends-list h4,
+#online-friends-list h4 { 
+    margin: 0 0 10px 0; 
+    font-size: 13px; 
+    text-transform: uppercase; 
+    color: #555; 
+    transition: color 0.3s; 
+}
+.friend-item { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 6px; border-top: 1px solid #eee; transition: background-color 0.2s, border-color 0.2s; cursor: pointer; } /* [수정] cursor: pointer */
+.friend-item:hover { background-color: #f0f2f5; }
+.friend-item .profile-pic { width: 40px; height: 40px; }
+.friend-item .user-info { flex-grow: 1; }
+.friend-item .user-info strong { color: #111; font-size: 15px; }
+.friend-item .user-info .user-status { font-size: 13px; color: #2de0a5; }
+.friend-item .user-info .user-status.offline { color: #999; }
+
+/* 탭 6: 활동 피드 */
+#activity-feed-list { display: flex; flex-direction: column; gap: 15px; }
+.activity-item { background-color: #f7f7f7; border: 1px solid #ddd; border-radius: 8px; padding: 15px; transition: background-color 0.3s, border-color 0.3s; }
+.activity-header { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 500; color: #333; margin-bottom: 10px; transition: color 0.3s; }
+.activity-header .icon { font-size: 18px; }
+.activity-content { font-size: 14px; color: #555; padding-left: 26px; transition: color 0.3s; }
+.activity-content a { color: #007bff; text-decoration: none; font-weight: 500; }
+.activity-content a:hover { text-decoration: underline; }
+.activity-content .comment-snippet { font-style: italic; background-color: #eee; padding: 5px 8px; border-radius: 4px; display: block; margin-top: 5px; transition: background-color 0.3s; }
+
+
+/* ------------------------------------------- */
+/* 12. 커뮤니티 피드 스타일 (목록) */
+/* ------------------------------------------- */
+#community-feed { flex-grow: 1; background-color: #f0f2f5; display: flex; flex-direction: column; overflow-y: auto; height: 100vh; transition: background-color 0.3s; }
+#community-header { background-color: #ffffff; padding: 16px 20px; border-bottom: 1px solid #ddd; flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; transition: background-color 0.3s, border-color 0.3s; }
+#community-header h2 { margin: 0; color: #111; transition: color 0.3s; }
+.write-post-btn { background-color: #007bff; color: white; border: none; border-radius: 6px; padding: 8px 14px; font-size: 15px; font-weight: bold; cursor: pointer; transition: background-color 0.2s; }
+.write-post-btn:hover { background-color: #0056b3; }
+#category-filters { display: flex; gap: 10px; padding: 15px 20px; background-color: #ffffff; border-bottom: 1px solid #ddd; justify-content: center; max-width: 800px; margin: 0 auto; width: 100%; box-sizing: border-box; }
+.category-btn { background-color: #f0f2f5; border: none; border-radius: 20px; padding: 6px 12px; font-size: 14px; font-weight: 500; color: #555; cursor: pointer; }
+.category-btn:hover { background-color: #e4e6eb; }
+.category-btn.active { background-color: #007bff; color: white; }
+#feed-content { padding: 20px; max-width: 800px; margin: 0 auto; width: 100%; box-sizing: border-box; display: flex; flex-direction: column; gap: 10px; }
+.empty-feed-message { text-align: center; color: #777; padding: 40px; transition: color 0.3s; }
+.post-link { background-color: #ffffff; border: 1px solid #ddd; border-radius: 8px; padding: 12px 16px; cursor: pointer; transition: all 0.2s; }
+.post-link:hover { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); border-color: #007bff; }
+.post-category-tag { font-size: 12px; font-weight: 500; color: #007bff; margin-bottom: 5px; }
+.post-link .post-title { margin: 0 0 4px 0; font-size: 18px; color: #111; transition: color 0.3s; }
+.post-link .post-meta { font-size: 13px; color: #555; transition: color 0.3s; }
+
+/* ------------------------------------------- */
+/* 13. 게시글 상세 보기 스타일             */
+/* ------------------------------------------- */
+#post-detail-view { flex-grow: 1; background-color: #ffffff; display: flex; flex-direction: column; overflow-y: auto; height: 100vh; transition: background-color 0.3s; }
+#detail-header { background-color: #ffffff; padding: 16px 20px; border-bottom: 1px solid #ddd; flex-shrink: 0; display: flex; align-items: center; gap: 15px; transition: background-color 0.3s, border-color 0.3s; }
+#back-to-feed-btn { background: none; border: 1px solid #ddd; border-radius: 50%; width: 36px; height: 36px; font-size: 20px; cursor: pointer; flex-shrink: 0; transition: background-color 0.2s, border-color 0.2s; }
+#back-to-feed-btn:hover { background-color: #f0f0f0; }
+#detail-post-title { margin: 0; font-size: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: color 0.3s; }
+#detail-content-wrapper { max-width: 800px; margin: 0 auto; width: 100%; padding: 20px; box-sizing: border-box; }
+#detail-post-content { background-color: #ffffff; border: 1px solid #ddd; border-radius: 8px; padding: 16px 20px; transition: background-color 0.3s, border-color 0.3s; }
+.post-author-info { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
+.post-author-info .profile-pic { width: 40px; height: 40px; }
+.author-text { display: flex; flex-direction: column; }
+.author-text strong { font-size: 16px; color: #111; transition: color 0.3s; }
+.author-text .post-meta { font-size: 13px; color: #555; transition: color 0.3s; }
+#detail-post-content .post-title-main { margin: 0 0 16px 0; font-size: 22px; color: #111; transition: color 0.3s; }
+#detail-post-content .post-content-main { font-size: 16px; color: #333; line-height: 1.6; white-space: pre-wrap; transition: color 0.3s; }
+#detail-post-actions { margin-top: 20px; padding-bottom: 20px; border-bottom: 1px solid #eee; transition: border-color 0.3s; }
+.post-action-btn { background-color: #f0f2f5; border: none; border-radius: 20px; padding: 8px 14px; font-size: 14px; font-weight: 500; color: #555; cursor: pointer; transition: background-color 0.2s, color 0.2s; }
+.post-action-btn:hover { background-color: #e4e6eb; }
+.post-action-btn.recommended { background-color: #e6f2ff; color: #007bff; font-weight: bold; }
+.post-action-btn span { margin-left: 5px; }
+#detail-comment-section { margin-top: 20px; }
+#comment-header { display: flex; justify-content: space-between; align-items: center; margin: 25px 0 15px 0; }
+#detail-comment-section h4 { margin: 0; font-size: 16px; transition: color 0.3s; }
+#comment-sort-options { display: flex; gap: 5px; }
+.sort-btn { background-color: #f0f2f5; border: none; border-radius: 6px; padding: 4px 8px; font-size: 12px; font-weight: 500; color: #555; cursor: pointer; }
+.sort-btn:hover { background-color: #e4e6eb; }
+.sort-btn.active { background-color: #007bff; color: white; }
+#detail-comment-list { max-height: 400px; overflow-y: auto; border-top: 1px solid #eee; padding-top: 10px; }
+#detail-comment-list .comment { background-color: #ffffff; border: 1px solid #eee; border-radius: 6px; padding: 12px 15px; margin-bottom: 10px; transition: background-color 0.3s, border-color 0.3s; }
+#detail-comment-list .comment-author { font-weight: bold; font-size: 14px; color: #111; transition: color 0.3s; }
+#detail-comment-list .comment-content { font-size: 15px; margin-top: 5px; color: #333; transition: color 0.3s; }
+#detail-comment-list p { margin: 0; }
+#comment-form { display: flex; gap: 10px; margin-bottom: 25px; }
+#comment-input { flex-grow: 1; border: 1px solid #ddd; border-radius: 20px; padding: 10px 15px; font-size: 15px; outline: none; transition: background-color 0.3s, border-color 0.3s, color 0.3s; }
+#comment-input:focus { border-color: #007bff; }
+#comment-submit-btn { background-color: #007bff; color: white; border: none; padding: 0 20px; border-radius: 20px; font-size: 15px; font-weight: bold; cursor: pointer; }
+#comment-submit-btn:hover { background-color: #0056b3; }
+
+
+/* ------------------------------------------- */
+/* 14. 팝업 모달 스타일 (공통)             */
+/* ------------------------------------------- */
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); display: flex; justify-content: center; align-items: center; z-index: 100; }
+.modal-content { background-color: white; border-radius: 8px; width: 90%; max-width: 600px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); transition: background-color 0.3s; }
+.modal-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid #eee; transition: border-color 0.3s; }
+.modal-header h3 { margin: 0; font-size: 18px; transition: color 0.3s; }
+.close-btn { background: none; border: none; font-size: 28px; color: #888; cursor: pointer; line-height: 1; }
+.close-btn:hover { color: #111; }
+.form-group { display: flex; flex-direction: column; gap: 8px; }
+.form-group label { font-size: 14px; font-weight: 500; color: #333; transition: color 0.3s; }
+.modal-content input[type="text"],
+.modal-content select,
+.modal-content textarea {
+    font-size: 16px;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    outline: none;
+    font-family: inherit;
+    transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+}
+.modal-content input[type="text"]:focus,
+.modal-content select:focus,
+.modal-content textarea:focus { border-color: #007bff; }
+
+#post-form { padding: 20px; display: flex; flex-direction: column; gap: 15px; border: none; margin: 0; }
+#post-content-input { min-height: 120px; resize: vertical; }
+#post-submit-button { background-color: #007bff; color: white; border: none; padding: 12px 15px; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; align-self: flex-end; }
+#post-submit-button:hover { background-color: #0056b3; }
+
+/* ------------------------------------------- */
+/* 15. 설정 모달 스타일             */
+/* ------------------------------------------- */
+#settings-modal .modal-content { max-width: 500px; }
+.modal-body { padding: 20px; display: flex; flex-direction: column; gap: 20px; }
+.form-group input[type="text"] { font-size: 16px; }
+.form-group small { font-size: 12px; color: #777; }
+.file-upload-label { background-color: #f0f0f0; color: #333; padding: 10px 15px; border-radius: 6px; cursor: pointer; text-align: center; font-weight: 500; }
+.file-upload-label:hover { background-color: #e0e0e0; }
+#profile-pic-upload { display: none; }
+#cropper-container { position: relative; width: 200px; height: 200px; margin: 10px auto; background-color: #eee; overflow: hidden; border-radius: 8px; }
+#profile-pic-preview { width: 100%; height: 100%; object-fit: cover; }
+#cropper-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 50%; box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5); }
+.toggle-group { flex-direction: row; justify-content: space-between; align-items: center; }
+.toggle-switch { position: relative; display: inline-block; width: 50px; height: 28px; }
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+.slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+input:checked + .slider { background-color: #007bff; }
+input:checked + .slider:before { transform: translateX(22px); }
+#save-settings-btn { background-color: #007bff; color: white; border: none; padding: 12px 15px; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; align-self: flex-end; }
+#save-settings-btn:hover { background-color: #0056b3; }
+
+
+/* ------------------------------------------- */
+/* 16. 다크 모드 (Dark Mode) 스타일      */
+/* ------------------------------------------- */
+body.dark { background-color: #2f3136; }
+body.dark #server-nav { background-color: #202225; border-right-color: #2f3136; }
+body.dark .server-icon { background-color: #36393f; color: #ccc; }
+body.dark .server-icon.add-server { background-color: #36393f; color: #2de0a5; }
+body.dark .server-icon.active { background-color: #5865f2; }
+body.dark .server-icon:hover { background-color: #5865f2; }
+body.dark #channel-list { background-color: #2f3136; color: #8e9297; border-right-color: #36393f; }
+body.dark #channel-header { border-bottom-color: #202225; }
+body.dark #channel-header h3 { color: #eee; }
+body.dark .channel-group h4 { color: #8e9297; }
+body.dark .add-button { color: #8e9297; }
+body.dark .add-button:hover { background-color: #36393f; color: #eee; }
+body.dark .channel-item, body.dark .dm-item { color: #8e9297; }
+body.dark .channel-item:hover, body.dark .dm-item:hover { background-color: #3a3c43; color: #eee; }
+body.dark .channel-item.active, body.dark .dm-item.active { background-color: #40444b; color: white; }
+body.dark .status-indicator { border-color: #2f3136; }
+body.dark #user-profile .status-indicator { border-color: #292b2f; }
+body.dark #user-profile { background-color: #292b2f; }
+body.dark .profile-pic { background-color: #444; }
+body.dark .user-info strong { color: #eee; }
+body.dark .user-info .user-status { color: #8e9297; }
+body.dark #user-profile button { color: #8e9297; }
+body.dark #user-profile button:hover { color: #eee; }
+body.dark #chat-container { background-color: #36393f; }
+body.dark #chat-area-wrapper { background-color: #36393f; }
+body.dark #chat-header { background-color: #36393f; border-bottom-color: #202225; color: #eee; }
+body.dark #chat-header p { color: #aaa; }
+body.dark #chat-window { background-color: #36393f; }
+body.dark .message.received { background-color: #40444b; color: #dcddde; }
+body.dark #image-preview-container { background-color: #2f3136; border-top-color: #40444b; }
+body.dark #image-preview-container span { color: #8e9297; }
+body.dark #message-form { background-color: #36393f; border-top-color: #40444b; }
+body.dark #attachment-button { background-color: #40444b; color: #ccc; }
+body.dark #attachment-button:hover { background-color: #555; }
+body.dark #message-input { background-color: #40444b; border-color: #40444b; color: #dcddde; }
+body.dark #message-input::placeholder { color: #72767d; }
+body.dark #message-input:focus { border-color: transparent; }
+body.dark #attachment-menu { background-color: #2a2a2a; }
+body.dark #attachment-menu label { color: #ccc; }
+body.dark #attachment-menu label:hover { background-color: #333; }
+body.dark #friends-view { background-color: #36393f; }
+body.dark #friends-header { background-color: #36393f; border-bottom-color: #202225; }
+body.dark #friends-header h3 { color: #eee; border-right-color: #40444b; }
+body.dark .friends-nav button { color: #8e9297; }
+body.dark .friends-nav button:hover { background-color: #3a3c43; color: #eee; }
+body.dark .friends-nav button.active { color: white; background-color: #40444b; }
+body.dark #add-friend-btn-main { background-color: #5865f2; color: white; }
+body.dark #add-friend-btn-main:hover { background-color: #4752c4; }
+body.dark .friends-content-pane h4 { color: #eee; }
+body.dark .placeholder-text { color: #8e9297; }
+body.dark #add-friend-view > p { color: #8e9297; } /* [버그 수정] */
+body.dark #add-friend-form-container p { color: #8e9297; }
+body.dark #add-friend-form input { background-color: #202225; border-color: #202225; color: #eee; }
+body.dark #add-friend-form button { background-color: #5865f2; }
+body.dark #all-friends-list h4 { color: #8e9297; }
+body.dark #online-friends-list h4 { color: #8e9297; }
+body.dark .friend-item { border-top-color: #40444b; }
+body.dark .friend-item:hover { background-color: #3a3c43; }
+body.dark .friend-item .user-info strong { color: #eee; }
+body.dark .activity-item { background-color: #2f3136; border-color: #40444b; }
+body.dark .activity-header { color: #eee; }
+body.dark .activity-content { color: #dcddde; }
+body.dark .activity-content a { color: #5865f2; }
+body.dark .activity-content .comment-snippet { background-color: #40444b; }
+
+/* 커뮤니티 다크모드 */
+body.dark #community-feed { background-color: #36393f; }
+body.dark #community-header { background-color: #36393f; border-bottom-color: #202225; }
+body.dark #community-header h2 { color: #eee; }
+body.dark .write-post-btn { background-color: #5865f2; }
+body.dark .write-post-btn:hover { background-color: #4752c4; }
+body.dark #category-filters { background-color: #36393f; border-bottom-color: #202225; }
+body.dark .category-btn { background-color: #40444b; color: #ccc; }
+body.dark .category-btn:hover { background-color: #555; }
+body.dark .category-btn.active { background-color: #5865f2; color: white; }
+body.dark .empty-feed-message { color: #72767d; }
+body.dark .post-link { background-color: #2f3136; border-color: #40444b; }
+body.dark .post-link:hover { border-color: #5865f2; }
+body.dark .post-category-tag { color: #5865f2; }
+body.dark .post-link .post-title { color: #eee; }
+body.dark .post-link .post-meta { color: #8e9297; }
+body.dark #post-detail-view { background-color: #36393f; }
+body.dark #detail-header { background-color: #36393f; border-bottom-color: #202225; }
+body.dark #back-to-feed-btn { border-color: #40444b; color: #ccc; }
+body.dark #back-to-feed-btn:hover { background-color: #40444b; }
+body.dark #detail-post-title { color: #eee; }
+body.dark #detail-post-content { background-color: #36393f; border-color: #40444b; }
+body.dark .post-author-info .author-text strong { color: #eee; }
+body.dark .post-author-info .author-text .post-meta { color: #8e9297; }
+body.dark #detail-post-content .post-title-main { color: #eee; }
+body.dark #detail-post-content .post-content-main { color: #dcddde; }
+body.dark #detail-post-actions { border-bottom-color: #40444b; }
+body.dark .post-action-btn { background-color: #40444b; color: #ccc; }
+body.dark .post-action-btn:hover { background-color: #555; }
+body.dark .post-action-btn.recommended { background-color: #5865f2; color: white; }
+body.dark #detail-comment-section h4 { color: #eee; }
+body.dark #comment-header { }
+body.dark .sort-btn { background-color: #40444b; color: #ccc; }
+body.dark .sort-btn:hover { background-color: #555; }
+body.dark .sort-btn.active { background-color: #5865f2; color: white; }
+body.dark #detail-comment-list { border-top-color: #40444b; }
+body.dark #detail-comment-list .comment { background-color: #36393f; border-color: #40444b; }
+body.dark #detail-comment-list .comment-author { color: #eee; }
+body.dark #detail-comment-list .comment-content { color: #dcddde; }
+body.dark #comment-input { background-color: #40444b; border-color: #40444b; color: #dcddde; }
+body.dark #comment-input:focus { border-color: #5865f2; }
+/* 모달 다크모드 */
+body.dark .modal-content { background-color: #2f3136; }
+body.dark .modal-header { border-bottom-color: #40444b; }
+body.dark .modal-header h3 { color: #eee; }
+body.dark .close-btn { color: #8e9297; }
+body.dark .form-group label { color: #ccc; }
+body.dark .modal-content input[type="text"],
+body.dark .modal-content select,
+body.dark .modal-content textarea { background-color: #202225; border-color: #202225; color: #eee; }
+body.dark .file-upload-label { background-color: #40444b; color: #ccc; }
+body.dark .file-upload-label:hover { background-color: #555; }
+body.dark #cropper-container { background-color: #202225; border-color: #555; }
