@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase 채팅 테스트</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav id="server-nav">
+        <div class="server-icon active" title="홈 (채팅)" id="home-button">
+            🏠
+        </div>
+        <div class="server-icon" title="커뮤니티" id="community-button">
+            🌍
+        </div>
+        <button class="server-icon add-server" title="서버 추가" id="add-server-button">+</button>
+    </nav>
+
+    <div id="app-wrapper">
+        <aside id="channel-list">
+            <header id="channel-header">
+                <h3>친구</h3>
+            </header>
+            <div id="channel-content">
+                <ul id="friends-list-ul">
+                    <li class="channel-item active" id="friends-btn">🤝 친구</li>
+                </ul>
+                <section class="channel-group">
+                    <div class="channel-group-header">
+                        <h4>개인 메시지 (DM)</h4>
+                        <button id="add-dm" class="add-button" title="새 메시지 시작">+</button>
+                    </div>
+                    <ul id="dm-list-ul"></ul> 
+                </section>
+                <section class="channel-group hidden" id="server-channels-section">
+                    <div class="channel-group-header">
+                        <h4>채널</h4>
+                        <button id="add-channel" class="add-button" title="채널 만들기">+</button>
+                    </div>
+                    <ul id="channel-list-ul"></ul>
+                </section>
+            </div>
+            <footer id="user-profile">
+                <img src="https://via.placeholder.com/32" alt="Profile" class="profile-pic" id="user-profile-pic" onerror="this.src='https://via.placeholder.com/32'">
+                <div class="user-info">
+                    <strong id="user-profile-name">YourName</strong>
+                    <span class="user-status" id="user-profile-tag">#1234</span>
+                </div>
+                <span class="status-indicator online"></span>
+                <button title="User Settings" id="open-settings-btn">⚙️</button>
+            </footer>
+        </aside>
+
+        <main id="chat-container">
+            
+            <main id="friends-view">
+                <header id="friends-header">
+                    <h3>🤝 친구</h3>
+                    <nav class="friends-nav" id="friends-nav-buttons">
+                        <button class="active" data-view="online">온라인</button>
+                        <button data-view="all">모두</button>
+                        <button data-view="pending">대기 중</button>
+                        <button data-view="blocked">차단 목록</button>
+                        <button data-view="activity">나의 활동</button>
+                        <button id="add-friend-btn-main" data-view="add">친구 추가하기</button>
+                    </nav>
+                </header>
+                <div class="friends-content-wrapper">
+                    
+                    <div id="online-friends-view" class="friends-content-pane active">
+                        <h4>온라인</h4>
+                        <div id="online-friends-list">
+                            </div>
+                    </div>
+
+                    <div id="all-friends-view" class="friends-content-pane hidden">
+                        <h4>모든 친구</h4>
+                        <div id="all-friends-list">
+                            </div>
+                    </div>
+
+                    <div id="pending-friends-view" class="friends-content-pane hidden">
+                        <h4>대기 중인 친구 요청</h4>
+                        <p class="placeholder-text">수신/발신한 친구 요청이 여기에 표시됩니다.</p>
+                    </div>
+
+                    <div id="blocked-friends-view" class="friends-content-pane hidden">
+                        <h4>차단한 사용자</h4>
+                        <p class="placeholder-text">차단한 사용자가 없습니다.</p>
+                    </div>
+                    
+                    <div id="add-friend-view" class="friends-content-pane hidden">
+                        <h4>친구 추가하기</h4>
+                        <p>Tag를 사용하여 친구를 추가할 수 있어요.</p>
+                        <form id="add-friend-form">
+                            <input type="text" id="add-friend-input" placeholder="사용자명#0000 입력">
+                            <button type="submit">친구 요청 보내기</button>
+                        </form>
+                    </div>
+
+                    <div id="activity-feed-view" class="friends-content-pane hidden">
+                        <h4>나의 활동</h4>
+                        <div id="activity-feed-list">
+                            </div>
+                    </div>
+
+                </div>
+            </main>
+
+            <div id="chat-area-wrapper" class="hidden">
+                <header id="chat-header">
+                    <h3># general</h3>
+                    <p>채널 주제: 프로젝트에 대한 일반적인 대화</p>
+                </header>
+                <div id="chat-window"></div>
+                <div id="attachment-menu">
+                    <label for="image-input">🖼️ 이미지</label>
+                    <label for="file-input">📄 파일</label>
+                </div>
+                <input type="file" id="image-input" accept="image/*">
+                <input type="file" id="file-input">
+                <div id="image-preview-container" class="hidden">
+                    <div class="image-preview-wrapper">
+                        <img id="image-preview-img" src="">
+                        <button id="cancel-image-preview" type="button">&times;</button>
+                    </div>
+                    <span>Enter 키를 눌러 전송 (텍스트 추가 가능)</span>
+                </div>
+                <form id="message-form">
+                    <button type="button" id="attachment-button">+</button>
+                    <input type="text" id="message-input" placeholder="# general에 메시지 보내기" autocomplete="off">
+                    <button type="submit">전송</button>
+                </form>
+            </div>
+
+        </main>
+    </div>
+
+    <main id="community-feed" class="hidden">
+        <header id="community-header">
+            <h2>커뮤니티 홈</h2>
+            <button id="open-post-modal-btn" class="write-post-btn">글쓰기</button>
+        </header>
+        <nav id="category-filters">
+            <button class="category-btn active" data-category="all">전체</button>
+            <button class="category-btn" data-category="free">자유</button>
+            <button class="category-btn" data-category="question">질문</button>
+            <button class="category-btn" data-category="info">정보</button>
+        </nav>
+        <div id="feed-content">
+        </div>
+    </main>
+    
+    <main id="post-detail-view" class="hidden">
+        <header id="detail-header">
+            <button id="back-to-feed-btn">←</button>
+            <h2 id="detail-post-title"></h2>
+        </header>
+        <div id="detail-content-wrapper">
+            <div id="detail-post-content">
+                <div class="post-author-info">
+                    <img src="" alt="Author" class="profile-pic" id="detail-author-pic">
+                    <div class="author-text">
+                        <strong id="detail-author-name"></strong>
+                        <span class="post-meta" id="detail-post-meta"></span>
+                    </div>
+                </div>
+                <h3 class="post-title-main" id="detail-title-main"></h3>
+                <div class="post-content-main" id="detail-content-main"></div>
+            </div>
+            <div id="detail-post-actions">
+                <button id="detail-recommend-btn" class="post-action-btn" data-post-id="">
+                    👍 추천 <span>0</span>
+                </button>
+            </div>
+            <div id="detail-comment-section">
+                <form id="comment-form" data-post-id="">
+                    <input type="text" id="comment-input" placeholder="댓글을 입력하세요..." autocomplete="off" required>
+                    <button type="submit" id="comment-submit-btn">등록</button>
+                </form>
+                <div id="comment-header">
+                    <h4>댓글 <span id="detail-comment-count">0</span></h4>
+                    <div id="comment-sort-options">
+                        <button class="sort-btn active" data-sort="newest">최신순</button>
+                        <button class="sort-btn" data-sort="oldest">오래된순</button>
+                    </div>
+                </div>
+                <div id="detail-comment-list">
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="post-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <header class="modal-header">
+                <h3>새 글 작성</h3>
+                <button id="close-post-modal-btn" class="close-btn">&times;</button>
+            </header>
+            <form id="post-form">
+                <div class="form-group">
+                    <label for="post-category-select">카테고리</label>
+                    <select id="post-category-select">
+                        <option value="free">자유</option>
+                        <option value="question">질문</option>
+                        <option value="info">정보</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="post-title-input">제목</label>
+                    <input type="text" id="post-title-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="post-content-input">내용</label>
+                    <textarea id="post-content-input" required></textarea>
+                </div>
+                <button type="submit" id="post-submit-button">글쓰기</button>
+            </form>
+        </div>
+    </div>
+    
+    <div id="settings-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <header class="modal-header">
+                <h3>설정</h3>
+                <button id="close-settings-btn" class="close-btn">&times;</button>
+            </header>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="username-input">사용자 이름</label>
+                    <input type="text" id="username-input">
+                </div>
+                <div class="form-group">
+                    <label for="usertag-input">태그 (4자리 숫자)</label>
+                    <input type="text" id="usertag-input" maxlength="4" placeholder="1234">
+                </div>
+                <div class="form-group">
+                    <label>프로필 사진</label>
+                    <label for="profile-pic-upload" class="file-upload-label">
+                        파일 선택
+                        <input type="file" id="profile-pic-upload" accept="image/*">
+                    </label>
+                    <div id="cropper-container" class="hidden">
+                        <img id="profile-pic-preview" src="">
+                        <div id="cropper-overlay"></div>
+                    </div>
+                    <small>파일을 선택하면 원형 미리보기가 나타납니다.</small>
+                </div>
+                <div class="form-group">
+                    <label for="profile-pic-url-input">...또는 URL 입력</label>
+                    <input type="text" id="profile-pic-url-input" placeholder="https://example.com/image.png">
+                </div>
+                <div class="form-group toggle-group">
+                    <label>다크 모드</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="dark-mode-toggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <button id="save-settings-btn">저장하기</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>
